@@ -1,0 +1,2 @@
+Quiero implementar el siguiente gráfico en Python pero quiero agregar una funcionalidad para ocultar y mostrar cada grupo de datos al presionar el cursor sobre cada leyenda. Debes mostrar la misma cantidad de grupos y con colores similares a los de la imagen. Quiero que toda la información esté en español.
+

@@ -1,0 +1,1 @@
+Necesito implementar una funcionalidad adicional al gráfico de la imágen que permita ingresar datos con un valor de emisión de CO2 respectivo y recalcular todo el gráfico. El código debe contener los datos iniciales que permitan calcular los porcentajes que se ven en la imagen. Porporciona toda la información en Español y el código en Python.

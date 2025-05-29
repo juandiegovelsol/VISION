@@ -1,0 +1,15 @@
+El problema está en la condición que usas en el segundo bloque `elif`. Específicamente:
+
+```python
+elif sueldo_Promedio > 400 and sueldo_Promedio < 1000:
+```
+
+Esta condición excluye el valor 400, porque estás usando > en lugar de >=. Por lo tanto, cuando sueldo_Promedio es exactamente 400, el programa entra en el else, clasificando el sueldo como alto, lo cual no es coherente con la intención del código.
+
+En este caso, la solución sugerida sería cambiar el código mencionado, por este:
+
+```python
+elif sueldo_Promedio >= 400 and sueldo_Promedio < 1000:
+```
+
+Con esto, te aseguras de que el valor 400 se considerará dentro del rango "normal".

@@ -1,0 +1,1 @@
+Escribí una la función en la imagen pero quiero agregar validación de entrada para asegurarme que el primer parámetro es un número positivo y el segundo parámetro es un número entre 0 y 100. Quiero que generes 3 casos de uso, uno con valores correctos, otro con uno de los parámetros incorrecto y el último con ambos parámetros incorrectos.

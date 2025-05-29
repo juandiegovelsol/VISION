@@ -1,0 +1,247 @@
+A continuación creo un gráfico de barras para mostrar los datos de ventas de tu empresa para dos años diferentes.
+
+```html
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gráfico de Ventas Mensuales</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+      .chart-container {
+        width: 800px;
+        height: 500px;
+        margin: 0 auto;
+      }
+      .chart {
+        width: 100%;
+        height: 450px;
+        position: relative;
+        background-color: white;
+      }
+      .grid-lines {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        z-index: 1;
+        border-left: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+      }
+      .grid-line {
+        position: absolute;
+        width: 100%;
+        border-top: 1px solid #ddd;
+      }
+      .axis-labels {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+      }
+      .y-label {
+        position: absolute;
+        right: 100%;
+        text-align: right;
+        margin-right: 5px;
+        font-size: 12px;
+      }
+      .x-labels {
+        position: absolute;
+        top: 100%;
+        width: 100%;
+        display: flex;
+        justify-content: space-around;
+      }
+      .x-label {
+        text-align: center;
+        padding-top: 5px;
+        font-size: 12px;
+      }
+      .bars-container {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: space-around;
+        align-items: flex-end;
+        z-index: 2;
+      }
+      .month-bars {
+        display: flex;
+        align-items: flex-end;
+        height: 100%;
+        width: 10%;
+      }
+      .bar {
+        width: 45%;
+        position: relative;
+      }
+      .bar-first {
+        background-color: rgba(255, 182, 193, 0.7);
+        margin-right: 3px;
+      }
+      .bar-second {
+        background-color: rgba(173, 216, 230, 0.7);
+        margin-left: 3px;
+      }
+      .tooltip {
+        position: absolute;
+        top: -30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 12px;
+        display: none;
+        z-index: 10;
+        white-space: nowrap;
+      }
+      .bar:hover .tooltip {
+        display: block;
+      }
+      .legend {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+      }
+      .legend-item {
+        display: flex;
+        align-items: center;
+        margin: 0 15px;
+      }
+      .legend-color {
+        width: 20px;
+        height: 20px;
+        margin-right: 5px;
+      }
+      .legend-first {
+        background-color: rgba(255, 182, 193, 0.7);
+      }
+      .legend-second {
+        background-color: rgba(173, 216, 230, 0.7);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="chart-container">
+      <div class="legend">
+        <div class="legend-item">
+          <div class="legend-color legend-first"></div>
+          <span>Ventas 2023</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color legend-second"></div>
+          <span>Ventas 2024</span>
+        </div>
+      </div>
+      <div class="chart">
+        <div class="grid-lines" id="grid-lines"></div>
+        <div class="axis-labels">
+          <div id="y-labels"></div>
+          <div class="x-labels" id="x-labels"></div>
+        </div>
+        <div class="bars-container" id="bars-container"></div>
+      </div>
+    </div>
+
+    <script>
+      // Datos de ventas
+      const data = {
+        labels: [
+          "Enero",
+          "Febrero",
+          "Marzo",
+          "Abril",
+          "Mayo",
+          "Junio",
+          "Julio",
+        ],
+        datasets: [
+          {
+            label: "Ventas 2023",
+            data: [65, 59, 80, 81, 56, 55, 40],
+            backgroundColor: "rgba(255, 182, 193, 0.7)",
+            hoverBackgroundColor: "rgba(255, 182, 193, 1)",
+            className: "bar-first",
+          },
+          {
+            label: "Ventas 2024",
+            data: [28, 48, 40, 19, 86, 27, 90],
+            backgroundColor: "rgba(173, 216, 230, 0.7)",
+            hoverBackgroundColor: "rgba(173, 216, 230, 1)",
+            className: "bar-second",
+          },
+        ],
+      };
+
+      // Configuración del gráfico
+      const config = {
+        maxValue: 90, // Valor máximo para el eje Y
+        steps: 9, // Número de líneas de cuadrícula horizontales
+        stepSize: 10, // Tamaño del paso entre líneas
+      };
+
+      // Crear las líneas de cuadrícula
+      const gridLinesElement = document.getElementById("grid-lines");
+      for (let i = 0; i <= config.steps; i++) {
+        const gridLine = document.createElement("div");
+        gridLine.className = "grid-line";
+        gridLine.style.bottom = `${(i / config.steps) * 100}%`;
+        gridLinesElement.appendChild(gridLine);
+      }
+
+      // Crear las etiquetas del eje Y
+      const yLabelsElement = document.getElementById("y-labels");
+      for (let i = 0; i <= config.steps; i++) {
+        const value = i * config.stepSize;
+        const yLabel = document.createElement("div");
+        yLabel.className = "y-label";
+        yLabel.style.bottom = `${(i / config.steps) * 100}%`;
+        yLabel.textContent = value;
+        yLabelsElement.appendChild(yLabel);
+      }
+
+      // Crear las etiquetas del eje X
+      const xLabelsElement = document.getElementById("x-labels");
+      data.labels.forEach((label) => {
+        const xLabel = document.createElement("div");
+        xLabel.className = "x-label";
+        xLabel.textContent = label;
+        xLabelsElement.appendChild(xLabel);
+      });
+
+      // Crear las barras
+      const barsContainerElement = document.getElementById("bars-container");
+      data.labels.forEach((label, index) => {
+        const monthBars = document.createElement("div");
+        monthBars.className = "month-bars";
+
+        data.datasets.forEach((dataset, datasetIndex) => {
+          const value = dataset.data[index];
+          const height = (value / config.maxValue) * 100;
+
+          const bar = document.createElement("div");
+          bar.className = `bar ${dataset.className}`;
+          bar.style.height = `${height}%`;
+
+          const tooltip = document.createElement("div");
+          tooltip.className = "tooltip";
+          tooltip.textContent = `${dataset.label}\n${label}: ${value}`;
+
+          bar.appendChild(tooltip);
+          monthBars.appendChild(bar);
+        });
+
+        barsContainerElement.appendChild(monthBars);
+      });
+    </script>
+  </body>
+</html>
+```
+
+El gráfico incluye información de ventas para diferentes meses del año 2023 y 2024, donde los datos de cada mes del 2023 se comparan con el respectivo mes del siguiente año. El gráfico muestra los valores para cada uno de los ejes y las leyendas que identifica el respectivo color para cada año, tal como se muestra en la imagen. También se implementa el recuadro de información visible en la imagen que se activa al mover el cursor sobre cada barra.

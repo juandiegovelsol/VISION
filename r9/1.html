@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Gráfica creada con PHP</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <h2>Gráfica creada sin PHP</h2>
+    <canvas id="grafica"></canvas>
+
+    <script>
+      (async () => {
+        // Datos simulados (como si vinieran del PHP)
+        const respuesta = {
+          etiquetas: ["Enero", "Febrero", "Marzo", "Abril"],
+          datos: [5000, 1500, 8000, 5100],
+        };
+
+        const $grafica = document.querySelector("#grafica");
+        const etiquetas = respuesta.etiquetas;
+
+        const datosVentas2020 = {
+          label: "Ventas por mes",
+          data: respuesta.datos,
+          backgroundColor: "rgba(54, 162, 235, 0.2)",
+          borderColor: "rgba(54, 162, 235, 1)",
+          borderWidth: 1,
+          tension: 0.4,
+          fill: true,
+        };
+
+        new Chart($grafica, {
+          type: "line",
+          data: {
+            labels: etiquetas,
+            datasets: [datosVentas2020],
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                position: "top",
+              },
+              title: {
+                display: false,
+              },
+            },
+          },
+        });
+      })();
+    </script>
+  </body>
+</html>

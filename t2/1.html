@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculadora de IMC</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .form-group {
+        margin-bottom: 15px;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+      input {
+        padding: 8px;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      button {
+        background-color: #4caf50;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+      .resultado {
+        margin-top: 20px;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 5px;
+      }
+      .error {
+        color: red;
+        font-size: 14px;
+        margin-top: 5px;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Calculadora de Índice de Masa Corporal</h1>
+
+    <form id="formularioIMC" onsubmit="return false;">
+      <div class="form-group">
+        <label for="peso">¿Cuál es tu peso en libras?</label>
+        <input type="number" id="peso" step="0.01" required />
+        <div id="errorPeso" class="error">
+          El peso debe ser un número mayor que cero.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="altura">¿Cuál es tu altura en pulgadas?</label>
+        <input type="number" id="altura" step="0.01" required />
+        <div id="errorAltura" class="error">
+          La altura debe ser un número mayor que cero.
+        </div>
+      </div>
+
+      <button type="button" onclick="calcularIMC()">Calcular IMC</button>
+    </form>
+
+    <div id="texto" class="resultado"></div>
+
+    <script>
+      function calcularIMC() {
+        var peso = parseFloat(document.getElementById("peso").value);
+        var altura = parseFloat(document.getElementById("altura").value);
+
+        // Reiniciar mensajes de error
+        document.getElementById("errorPeso").style.display = "none";
+        document.getElementById("errorAltura").style.display = "none";
+
+        // Validar peso
+        if (isNaN(peso) || peso <= 0) {
+          document.getElementById("errorPeso").style.display = "block";
+          document.getElementById("peso").focus();
+          return;
+        }
+
+        // Validar altura
+        if (isNaN(altura) || altura <= 0) {
+          document.getElementById("errorAltura").style.display = "block";
+          document.getElementById("altura").focus();
+          return;
+        }
+
+        // Calcular IMC
+        var imc = (peso / (altura * altura)) * 703;
+
+        // Redondear a dos decimales
+        imc = Math.round(imc * 100) / 100;
+
+        // Crear clasificación del IMC
+        let clasificacion = "";
+        if (imc < 18.5) {
+          clasificacion = "Bajo peso";
+        } else if (imc >= 18.5 && imc < 25) {
+          clasificacion = "Peso normal";
+        } else if (imc >= 25 && imc < 30) {
+          clasificacion = "Sobrepeso";
+        } else {
+          clasificacion = "Obesidad";
+        }
+
+        crearDivision(imc, clasificacion);
+      }
+
+      function crearDivision(imc, clasificacion) {
+        var newDiv = document.createElement("div");
+        // Se crea un nuevo elemento en el documento de tipo "div"
+
+        var newContet = document.createTextNode(
+          "Tu índice de masa corporal es " + imc + " (" + clasificacion + ")"
+        );
+        // Se crea un nodo de texto en el documento que contendrá cierto texto
+
+        newDiv.appendChild(newContet);
+        // El nodo de texto se introduce como un hijo del elemento "div" creado
+
+        var texto = document.getElementById("texto");
+        texto.innerHTML = ""; // Limpiar resultados anteriores
+        texto.appendChild(newDiv);
+        // El elemento "div" se introduce como un hijo en un párrafo existente del HTML
+      }
+    </script>
+  </body>
+</html>

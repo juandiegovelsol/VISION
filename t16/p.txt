@@ -1,0 +1,1 @@
+Tengo la documentación en la imagen de acerca de cómo se debe implementar el grafo y las relaciones entre cada vértice o nodo. Quiero que implementes solamente el grafo en azul, con las relaciones que se ven entre los vértices, pero quiero que los nodos sean representados con círculos y las conexiones con líneas rectas. El código debe estar en HTML, CSS y JavaScript usando D3.js

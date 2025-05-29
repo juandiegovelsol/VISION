@@ -1,0 +1,63 @@
+El siguiente código extrae los valores de la imagen proporcionada y recrea la imagen ajustándola con las condiciones establecidas.
+
+```python
+import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
+
+anios_dos_digitos = list(range(93, 100)) + list(range(0, 13))  # 93–99 y 00–12
+
+# Convertir cada año al formato AAAA
+anios = []
+for a in anios_dos_digitos:
+    if 0 <= a <= 12:
+        anios.append(2000 + a)
+    else:
+        anios.append(1900 + a)
+
+# Valore de las ventas
+ventas_millones = [
+    0.3, 0.6, 0.8, 1.1, 1.1, 1.4, 1.4, 1.5,
+    1.2, 1.3, 1.4, 1.2, 0.9, 0.9, 1.0, 1.8,
+    2.5, 2.8, 3.9, 4.6
+]
+
+ventas = [v * 1_000_000 for v in ventas_millones]
+
+# Crear gráfico
+plt.figure(figsize=(12, 6))
+barras = plt.bar(anios, ventas, color='steelblue', edgecolor='black')
+
+# Etiquetas de los ejes
+plt.title("Ventas de Discos de Vinilo en EE.UU. (1993–2012)", fontsize=14)
+plt.xlabel("Año", fontsize=12)
+plt.ylabel("Número de discos vendidos por año", fontsize=12)
+
+formatter = ticker.FuncFormatter(lambda x, pos: f'{x / 1_000_000:.0f}M')
+plt.gca().yaxis.set_major_formatter(formatter)
+plt.gca().yaxis.set_major_locator(ticker.MultipleLocator(1_000_000))
+plt.xticks(anios, rotation=45)
+plt.grid(axis='y', linestyle='--', alpha=0.6)
+
+# Mostrar valores encima de cada barra 
+for bar, valor in zip(barras, ventas_millones):
+    altura = bar.get_height()
+    plt.text(bar.get_x() + bar.get_width() / 2, altura + 100_000,
+             f'{valor:.1f}M', ha='center', va='bottom', fontsize=9)
+
+plt.tight_layout()
+plt.show()
+```
+
+El código se encarga de recrear la imagen agregando las etiquetas correspondientes a cada uno de los ejes incluyendo el titulo de la grafica, ajusta los valores del eje X agregando el valor de cada año con el formato requerido de AAAA , el eje Y agrega las etiquetas correspondientes e incluye el valor de M al lado de cada valor para representar la cantidad de millones de discos vendidos en los datos extraídos de la imagen original, se mantiene en la imagen encima de cada grafico de barras la visualización del valor exacto encima de cada barra, lo que mejora la visualización de la grafica y permite al usuario conocer la cantidad específica de discos vendidos por año sin necesidad de estimar a partir del eje Y.
+
+
+
+
+
+El siguiente código extrae los valores de la imagen proporcionada y recrea la imagen ajustándola con las condiciones establecidas.
+
+```python
+
+```
+
+El código se encarga de recrear la imagen agregando las etiquetas correspondientes a cada uno de los ejes e incluyendo el título de la gráfica. Los valores del eje X se ajustan al formato AAAA requerido y el eje Y agrega las etiquetas correspondientes. Cada valor del eje Y se muestra con una M al lado para representar la cantidad de millones de discos vendidos en los datos extraídos de la imagen original. Encima de cada barra se mantiene el valor exacto que se representa, lo que mejora la visualización de la grafica y permite al usuario conocer la cantidad específica de discos vendidos por año sin necesidad de una estimación a partir del eje Y.

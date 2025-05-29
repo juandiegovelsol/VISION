@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es-ES">
+  <head>
+    <title>Mi página web</title>
+  </head>
+  <body>
+    <h1>!Bienvenidos a Mi Página Web!</h1>
+    <p>Es genial tenerte de visita.</p>
+    <img
+      src="hola.jpg"
+      alt="un gato levantando la patita delantera"
+      width="1000"
+      height="1000"
+    />
+    <p>!Haz clic en el botón de abajo para una sorpresa divertida!</p>
+
+    <!-- Con id="Button1" se le asigna un identificador único al botón -->
+    <button id="Button1">Clic aquí</button>
+
+    <!-- Con style="display:none;" permite ocultar el elemento usando CSS -->
+    <div id="sorpresaOculta" style="display: none">
+      <h2>¡Sorpresa!</h2>
+      <p>!Me encontraste!</p>
+    </div>
+
+    <!-- Con script se asigna un bloc de código JavaScript para ser ejecutado al cargar la página -->
+    <script>
+      // mostrarSorpresa es una función flecha (=>)
+      // Las funciones flecha son forma de escribir más concisa de las funciones
+      mostrarSorpresa = () => {
+        // Toma el id="sorpresaOculta" y cambia en su estilo display a block
+        document.getElementById("sorpresaOculta").style.display = "block";
+      };
+
+      // Se le asigna al boton en el evento onClick la llamada a la función mostrarSorpresa
+      // De esta forma cada que se haga clic en el botón se ejecutará la función mostrarSorpresa
+      document.getElementById("Button1").onclick = () => {
+        mostrarSorpresa();
+      };
+    </script>
+  </body>
+
+  <ul id="list"></ul>
+</html>

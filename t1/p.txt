@@ -1,0 +1,1 @@
+Quiero que cada operación usada en la imagen pueda ser ejecutada desde una función independiente que permita validar casos en que los parámetros no son numéricos, la función para calcular división debe validar que el divisor sea diferente de cero. También quiero agregar ejemplos de uso para cada función.

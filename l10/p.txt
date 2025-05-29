@@ -1,0 +1,44 @@
+De acuerdo con la imagen que me enviaste, acá te dejo el código en Python para esas funciones.
+
+```python
+def suma(a, b):
+    """
+    Suma dos números y devuelve el resultado.
+    
+    Parámetros:
+        a: Primer número
+        b: Segundo número
+        
+    Retorna:
+        La suma de a y b
+    """
+    return a + b
+
+def resta(a, b):
+    """
+    Resta dos números y devuelve el resultado.
+    
+    Parámetros:
+        a: Número del que se resta
+        b: Número a restar
+        
+    Retorna:
+        La diferencia entre a y b
+    """
+    return a - b
+
+def multiplicacion(a, b):
+    """
+    Multiplica dos números y devuelve el resultado.
+    
+    Parámetros:
+        a: Primer número
+        b: Segundo número
+        
+    Retorna:
+        El producto de a y b
+    """
+    return a * b
+```
+
+He creado las tres funciones que necesitas para que tus pruebas pasen correctamente. La función `suma(a, b)` suma dos números y devuelve su resultado, la función `resta(a, b)` resta el segundo número del primero, y la función `multiplicacion(a, b)` multiplica dos números. Se incluyó documentación correspondiente para cada función. Ahora todos las pruebas son ejecutables, solo recuerda importar la librería unittest e incluir un `assertEqual` para la prueba de multiplicación.

@@ -1,0 +1,74 @@
+Aquí está tu código con las modificaciones requeridas:
+
+```python
+import math
+
+# Ejemplo de cómo evitar expresiones complejas
+def validate_number(x):
+    '''Valida que el elemento sea un número'''
+    if isinstance(x,(int, float)):
+        return x
+    elif isinstance(x, str):
+        try: 
+            return float(x)
+        except ValueError:
+            return None
+    return None
+
+def square_root_numbers(numbers):
+    '''Retorna una lista de las raices cuadradas de los números'''
+    square_roots = []
+    for number in numbers: 
+        num = validate_number(number)
+        if num is not None and num >= 0:
+            square_roots.append(math.sqrt(num))
+    return square_roots
+
+def cube_root_numbers(numbers):
+    '''Retorna una lista de las raices cúbicas de los números'''
+    cube_roots = []
+    for number in numbers: 
+        num = validate_number(number)
+        if num is not None:
+            cube_roots.append(math.cbrt(num))
+    return cube_roots
+
+def square_numbers(numbers):
+    '''Retorna una lista de los cuadrados de los números.'''
+    squares = []
+    for number in numbers:
+        num = validate_number(number)
+        if num is not None: 
+            squares.append(num**2)
+    return squares
+
+def cube_numbers(numbers):
+    '''Retorna una lista de los cubos de los números'''
+    cubes = []
+    for number in numbers:
+        num = validate_number(number)
+        if num is not None: 
+            cubes.append(num**3)
+    return cubes
+
+def main():
+    numbers = [1, 2, 3, 4]
+
+    results_square_roots = square_root_numbers(numbers)
+    results_cubes_roots = cube_root_numbers(numbers)
+    results_squares = square_numbers(numbers)
+    results_cubes = cube_numbers(numbers)
+
+    print("Resultado raíces cuadradas:", results_square_roots)
+    print("Resultado raíces cúbicas:", results_cubes_roots)
+    print("Resultado cuadrados:", results_squares)
+    print("Resultado cubos:", results_cubes)
+```
+
+He agregado en el código funciones para calcular:
+
+* **Raíces cuadradas de los números ( *square_root_numbers***): Toma una lista, itera sobre sus elementos, por cada uno de ellos llama a la función `validate_number` y almacena el valor en una variable, revisa que ese valor no sea `None` y sea mayor o igual que cero (para evitar errores con los números imaginarios), en caso de que cumpla estas condiciones calcula la raíz cuadrada y lo agrega a la lista que contiene los resultados. Finalmente, retorna una lista con las raíces cuadradas de los números.
+* **Raíces cúbicas de los números ( *cube_root_numbers***) : Procedimiento similar a `square_root_numbers`, pero verifica que el valor devuelto por la función `validate_numbers` solamente no sea `None`. Si el valor no es, `None` se calcula la raíz cúbica con la librería `math`, específicamente con el método `cbrt`. Finalmente, retorna una lista con las raíces cúbicas de los números.
+* **Cubos de los números ( *cube_numbers***): Se tomó como base tu función `square_numbers`, únicamente se le agregó la llamada a `validate_numbers` para comprobar que el cálculo no falle y a la hora de realizar el cálculo, se remplaza el cuadrado (2) por el cubo(3). Finalmente, retorna una lista con los cubos de los números.
+
+Además, podrás notar como a tu función `square_numbers` también se le agregó la validación para prevenir posible error cuando algunos elementos de la lista que toma como parámetro no sean números. Finalmente, basándome en el ejemplo que ya tenía tu código, agregue las llamadas a las funciones que calculan el cubo, la raíz cuadrada y la raíz cúbica, sobre la lista `numbers` y una forma estructurada de imprimir los resultados de cada una.

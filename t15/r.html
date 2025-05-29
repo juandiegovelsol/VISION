@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Grafo Dirigido con D3.js</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 20px;
+      }
+
+      #graph-container {
+        width: 600px;
+        height: 400px;
+        border: 1px solid #ccc;
+        background-color: #f9f9f9;
+      }
+
+      .node circle {
+        stroke: #333;
+        stroke-width: 1.5px;
+      }
+
+      .node text {
+        font-size: 12px;
+        paint-order: stroke;
+        stroke: white;
+        stroke-width: 2px;
+        fill: black;
+        pointer-events: none;
+      }
+
+      .link {
+        stroke: #999;
+        stroke-opacity: 0.8;
+        stroke-width: 2px;
+      }
+
+      /* Estilo para la punta de flecha */
+      .arrow-head {
+        fill: #999;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Grafo Dirigido (Implementación)</h1>
+    <div id="graph-container"></div>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Datos del grafo dirigido
+        const nodesData = [
+          { id: "A" },
+          { id: "B" },
+          { id: "C" },
+          { id: "D" },
+          { id: "E" },
+          { id: "F" },
+        ];
+
+        // Basado en la matriz de adyacencia para el grafo dirigido:
+        const linksData = [
+          { source: "A", target: "B" },
+          { source: "B", target: "C" },
+          { source: "B", target: "E" },
+          { source: "C", target: "D" },
+          { source: "C", target: "E" },
+          { source: "E", target: "D" },
+          { source: "E", target: "F" },
+        ];
+
+        const container = document.getElementById("graph-container");
+        const width = container.clientWidth;
+        const height = container.clientHeight;
+        const nodeRadius = 20; // Radio de los nodos
+
+        const svg = d3
+          .select("#graph-container")
+          .append("svg")
+          .attr("width", width)
+          .attr("height", height)
+          .attr("viewBox", [0, 0, width, height])
+          .attr("style", "max-width: 100%; height: auto;");
+
+        // Definir la punta de flecha
+        svg
+          .append("defs")
+          .selectAll("marker")
+          .data(["arrow"])
+          .join("marker")
+          .attr("id", String)
+          .attr("viewBox", "0 -5 10 10")
+          .attr("refX", nodeRadius + 8) // Posición de la punta de la flecha (radio del nodo + un poco más)
+          .attr("refY", 0)
+          .attr("markerWidth", 6)
+          .attr("markerHeight", 6)
+          .attr("orient", "auto-start-reverse") // Orientación automática
+          .append("path")
+          .attr("d", "M0,-5L10,0L0,5") // Forma de la flecha (triángulo)
+          .attr("class", "arrow-head");
+
+        // Simulación de fuerzas
+        const simulation = d3
+          .forceSimulation(nodesData)
+          .force(
+            "link",
+            d3
+              .forceLink(linksData)
+              .id((d) => d.id)
+              .distance(100)
+          ) // Define la distancia
+          .force("charge", d3.forceManyBody().strength(-600)) // Define la repulsión
+          .force("center", d3.forceCenter(width / 2, height / 2))
+          .on("tick", ticked);
+
+        // Creación de los enlaces
+        const link = svg
+          .append("g")
+          .attr("class", "links")
+          .selectAll("line")
+          .data(linksData)
+          .join("line")
+          .attr("class", "link")
+          .attr("marker-end", "url(#arrow)"); // Aplicar la punta de flecha
+
+        // Creación de los nodos
+        const node = svg
+          .append("g")
+          .attr("class", "nodes")
+          .selectAll("g") // Crear un grupo por nodo para círculo y texto
+          .data(nodesData)
+          .join("g")
+          .attr("class", "node");
+
+        node.append("circle").attr("r", nodeRadius).attr("fill", "skyblue");
+
+        node
+          .append("text")
+          .text((d) => d.id)
+          .attr("text-anchor", "middle")
+          .attr("dy", ".35em"); // Centrar verticalmente
+
+        // Función que se ejecuta en la simulación
+        function ticked() {
+          link
+            .attr("x1", (d) => d.source.x)
+            .attr("y1", (d) => d.source.y)
+            .attr("x2", (d) => d.target.x)
+            .attr("y2", (d) => d.target.y);
+
+          node.attr("transform", (d) => `translate(${d.x},${d.y})`);
+        }
+      });
+    </script>
+  </body>
+</html>

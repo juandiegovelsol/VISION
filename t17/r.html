@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Grafo Editable con D3.js</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+      body {
+        font-family: sans-serif;
+        margin: 20px;
+      }
+      .nodes circle {
+        stroke: #fff;
+        stroke-width: 1.5px;
+      }
+      .nodes text {
+        font-size: 12px;
+        fill: white;
+        pointer-events: none;
+      }
+      .links line {
+        stroke-opacity: 0.8;
+      }
+      .link-labels text {
+        font-size: 12px;
+        fill: #333;
+        cursor: pointer;
+        paint-order: stroke;
+        stroke: white;
+        stroke-width: 3px;
+        stroke-linejoin: round;
+      }
+      .link-labels text:hover {
+        font-weight: bold;
+      }
+      .input-weight {
+        font-size: 12px;
+        width: 30px;
+        text-align: center;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      }
+    </style>
+  </head>
+  <body>
+    <svg width="700" height="500"></svg>
+
+    <script>
+      const nodesData = [
+        { id: 0, x: 100, y: 250 },
+        { id: 1, x: 100, y: 400 },
+        { id: 2, x: 300, y: 400 },
+        { id: 3, x: 500, y: 400 },
+        { id: 4, x: 300, y: 250 },
+        { id: 5, x: 500, y: 250 },
+        { id: 6, x: 200, y: 100 },
+        { id: 7, x: 400, y: 100 },
+        { id: 8, x: 600, y: 100 },
+      ];
+
+      // Usamos sourceId y targetId para referenciar los IDs de nodesData
+      let linksData = [
+        { sourceId: 0, targetId: 6, weight: 5 },
+        { sourceId: 0, targetId: 1, weight: 3 },
+        { sourceId: 1, targetId: 4, weight: 2 },
+        { sourceId: 1, targetId: 2, weight: 7 },
+        { sourceId: 2, targetId: 4, weight: 11 },
+        { sourceId: 2, targetId: 5, weight: 1 },
+        { sourceId: 2, targetId: 3, weight: 9 },
+        { sourceId: 3, targetId: 5, weight: 6 },
+        { sourceId: 4, targetId: 6, weight: 8 },
+        { sourceId: 4, targetId: 7, weight: 9 },
+        { sourceId: 5, targetId: 7, weight: 10 },
+        { sourceId: 5, targetId: 8, weight: 7 },
+        { sourceId: 6, targetId: 7, weight: 6 },
+        { sourceId: 7, targetId: 8, weight: 4 },
+        { sourceId: 3, targetId: 8, weight: 1 },
+      ];
+
+      // Mapear IDs a objetos nodo para fácil acceso
+      const nodeMap = new Map(nodesData.map((node) => [node.id, node]));
+
+      // Procesar enlaces para que 'source' y 'target' sean los objetos nodo
+      linksData = linksData.map((link) => ({
+        source: nodeMap.get(link.sourceId),
+        target: nodeMap.get(link.targetId),
+        weight: link.weight,
+        id: `s${link.sourceId}-t${link.targetId}`, // Un ID único para el enlace entre nodos
+      }));
+
+      const svg = d3.select("svg");
+      const width = +svg.attr("width");
+      const height = +svg.attr("height");
+      const nodeRadius = 20;
+
+      // Dibujar enlaces entre nodos
+      const link = svg
+        .append("g")
+        .attr("class", "links")
+        .selectAll("line")
+        .data(linksData, (d) => d.id)
+        .enter()
+        .append("line")
+        .attr("stroke", "#555")
+        .attr("stroke-width", 2)
+        .attr("x1", (d) => d.source.x)
+        .attr("y1", (d) => d.source.y)
+        .attr("x2", (d) => d.target.x)
+        .attr("y2", (d) => d.target.y);
+
+      // Dibujar etiquetas de peso para los enlaces entre nodos
+      const linkLabelGroup = svg.append("g").attr("class", "link-labels");
+
+      function updateLinkLabels() {
+        const linkLabel = linkLabelGroup
+          .selectAll("text")
+          .data(linksData, (d) => d.id);
+
+        linkLabel.exit().remove(); // Eliminar etiquetas antiguas
+
+        linkLabel
+          .enter()
+          .append("text")
+          .merge(linkLabel)
+          .attr("x", (d) => (d.source.x + d.target.x) / 2)
+          .attr("y", (d) => (d.source.y + d.target.y) / 2 - 5)
+          .attr("text-anchor", "middle")
+          .attr("dy", ".35em")
+          .text((d) => d.weight)
+          .on("click", function (event, d) {
+            event.stopPropagation(); // Evitar que el clic se propague al SVG
+            createInputForWeight(this, d);
+          });
+      }
+
+      updateLinkLabels(); // Llamada inicial para dibujar las etiquetas
+
+      // Dibujar nodos (círculos y texto)
+      const node = svg
+        .append("g")
+        .attr("class", "nodes")
+        .selectAll("g")
+        .data(nodesData, (d) => d.id)
+        .enter()
+        .append("g")
+        .attr("transform", (d) => `translate(${d.x},${d.y})`);
+
+      node.append("circle").attr("r", nodeRadius).attr("fill", "steelblue");
+
+      node
+        .append("text")
+        .text((d) => d.id)
+        .attr("text-anchor", "middle")
+        .attr("dy", ".35em");
+
+      // Función para crear un campo de entrada para editar el peso
+      function createInputForWeight(textElement, linkData) {
+        const textSelection = d3.select(textElement);
+        const textCoords = {
+          x: +textSelection.attr("x"),
+          y: +textSelection.attr("y"),
+        };
+
+        // Ocultar el texto temporalmente
+        textSelection.style("display", "none");
+
+        const foreignObject = linkLabelGroup
+          .append("foreignObject")
+          .attr("x", textCoords.x - 20) // Ajustar posición para centrar el campo de entrada
+          .attr("y", textCoords.y - 15 - 3.5) // Ajustar para el dy y altura del campo de entrada
+          .attr("width", 40)
+          .attr("height", 30)
+          .datum(linkData); // Asociar los datos del enlace al foreignObject
+
+        const input = foreignObject
+          .append("xhtml:input")
+          .attr("type", "number")
+          .attr("class", "input-weight")
+          .property("value", linkData.weight)
+          .on("blur", function () {
+            finishEditing(this, linkData, foreignObject, textSelection);
+          })
+          .on("keydown", function (event) {
+            if (event.key === "Enter") {
+              finishEditing(this, linkData, foreignObject, textSelection);
+            } else if (event.key === "Escape") {
+              // Cancelar edición
+              foreignObject.remove();
+              textSelection.style("display", null); // Mostrar texto original
+            }
+          });
+
+        input.node().focus();
+        input.node().select();
+      }
+
+      function finishEditing(
+        inputElement,
+        linkData,
+        foreignObject,
+        textSelection
+      ) {
+        const newValue = inputElement.value;
+        if (newValue !== "" && !isNaN(newValue)) {
+          linkData.weight = +newValue; // Actualizar el peso en los datos
+        }
+        foreignObject.remove();
+        textSelection.style("display", null); // Mostrar texto de nuevo
+        updateLinkLabels(); // Redibujar todas las etiquetas para reflejar el cambio
+      }
+    </script>
+  </body>
+</html>

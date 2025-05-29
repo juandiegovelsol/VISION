@@ -1,0 +1,61 @@
+Según la imagen, se pueden diferenciar los grafos dirigidos de los no dirigidos verificando si la matriz de adyacencia es simétrica o no. Para los grafos dirigidos, la matriz no es simétrica, mientras que para los no dirigidos, sí lo es.
+
+En la matriz de adyacencia de un grafo, se indica si hay una arista entre las vértices i y j si matriz\[i\]\[j\] = 1.
+
+Si el grafo no es dirigido, cada arista representa una conexión mutua entre las vértices. Se debe cumplir que matriz\[i\]\[j\] == matriz\[j\]\[i\] para todos las vértices. Esto es equivalente a decir que la matriz es simétrica.
+
+Aquí está el código que implementa esta verificación:
+
+```cpp
+#include <iostream>
+#include <vector>
+
+// Definición de la matriz de adyacencia usando vector de vectores.
+// Las filas y columnas corresponden a los vértices en orden (ej: 0=A, 1=B, etc.)
+// Un valor de 1 indica una arista, 0 indica que no hay arista.
+std::vector<std::vector<int>> matrizAdyacencia = {
+    //   A  B  C  D  E  F
+    {    0, 1, 0, 0, 0, 0 }, // A
+    {    1, 0, 1, 0, 1, 0 }, // B
+    {    0, 1, 0, 1, 1, 0 }, // C
+    {    0, 0, 1, 0, 1, 0 }, // D
+    {    0, 1, 1, 1, 0, 1 }, // E
+    {    0, 0, 0, 0, 1, 0 }  // F
+};
+
+/**
+ * @brief Evalúa si una matriz de adyacencia representa un grafo no dirigido.
+ * Un grafo no dirigido tiene una matriz de adyacencia simétrica (matriz[i][j] == matriz[j][i]).
+ * @param matriz La matriz de adyacencia a evaluar.
+ * @return true si la matriz es simétrica (grafo no dirigido), false en caso contrario.
+ */
+bool esGrafoNoDirigido(const std::vector<std::vector<int>>& matriz) {
+    int n = matriz.size();
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            // Si encontramos un par de elementos (i, j) y (j, i) que no son iguales,
+            // la matriz no es simétrica y el grafo es dirigido.
+            if (matriz[i][j] != matriz[j][i]) {
+                return false;
+            }
+        }
+    }
+    // Si recorrimos toda la matriz sin encontrar asimetrías, es un grafo no dirigido.
+    return true;
+}
+
+int main() {
+    std::cout << "Evaluando la matriz de adyacencia para determinar el tipo de grafo." << std::endl;
+
+    // Llamar a la función para verificar si el grafo es no dirigido.
+    if (esGrafoNoDirigido(matrizAdyacencia)) {
+        std::cout << "La matriz de adyacencia representa un grafo NO dirigido (es simetrica)." << std::endl;
+    } else {
+        std::cout << "La matriz de adyacencia representa un grafo dirigido (NO es simetrica)." << std::endl;
+    }
+
+    return 0;
+} 
+```
+
+El programa define el número de vértices y la matriz de adyacencia, la cual indica la relación entre los vértices de un grafo, donde cada fila indica el vértice y las columnas a qué vértices puede acceder con un 1 y 0 si no son accesibles desde el vértice de esa fila. Al ejecutar el programa, el programa usa la función `esGrafoNoDirigido` recibe la matriz de adyacencia y revisa si es simétrica. Finalmente, el programa muestra el resultado mediante la consola. Si necesitas validar otro grafo, solo modifica la variable `matrizAdyacencia` según tus necesidades.

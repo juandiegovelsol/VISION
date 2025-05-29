@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gráfico de Ventas por Producto</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f4f8;
+        margin: 0;
+        padding: 20px;
+      }
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+      }
+      h1 {
+        text-align: center;
+        color: #1a3b5d;
+        font-size: 28px;
+        margin-bottom: 30px;
+      }
+      .chart-container {
+        position: relative;
+        height: 60vh;
+        margin: 0 auto;
+      }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="chart-container">
+        <canvas id="donutChart"></canvas>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Datos de productos (simula datos de una base de datos)
+        const productos = [
+          {
+            nombre: "Mazamorra Morada",
+            ventas: 50,
+            color: "rgba(255, 182, 193, 0.8)",
+          },
+          {
+            nombre: "Torta de Chocolate",
+            ventas: 35,
+            color: "rgba(135, 206, 250, 0.8)",
+          },
+          {
+            nombre: "Pie de Manzana",
+            ventas: 40,
+            color: "rgba(255, 239, 186, 0.8)",
+          },
+          {
+            nombre: "Arroz con Leche",
+            ventas: 35,
+            color: "rgba(175, 238, 238, 0.8)",
+          },
+          {
+            nombre: "Gelatina de Fresa",
+            ventas: 60,
+            color: "rgba(216, 191, 216, 0.8)",
+          },
+          {
+            nombre: "Suspiro a la Limeña",
+            ventas: 30,
+            color: "rgba(255, 222, 173, 0.8)",
+          },
+        ];
+
+        // Preparar datos de ventas
+        const nombres = productos.map((p) => p.nombre);
+        const ventas = productos.map((p) => p.ventas);
+        const colores = productos.map((p) => p.color);
+
+        // Configuración del gráfico usando Chart.js
+        const ctx = document.getElementById("donutChart").getContext("2d");
+        const donutChart = new Chart(ctx, {
+          type: "doughnut",
+          data: {
+            labels: nombres,
+            datasets: [
+              {
+                data: ventas,
+                backgroundColor: colores,
+                borderColor: "white",
+                borderWidth: 2,
+                hoverOffset: 15,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: "50%",
+            plugins: {
+              legend: {
+                position: "top",
+                labels: {
+                  padding: 15,
+                  usePointStyle: true,
+                  font: {
+                    size: 12,
+                  },
+                },
+              },
+              tooltip: {
+                callbacks: {
+                  label: function (context) {
+                    const label = context.label || "";
+                    const value = context.raw || 0;
+                    const total = context.chart.data.datasets[0].data.reduce(
+                      (a, b) => a + b,
+                      0
+                    );
+                    const percentage = Math.round((value / total) * 100);
+                    return `${label}: ${percentage}%`;
+                  },
+                },
+                backgroundColor: "rgba(0, 0, 0, 0.7)",
+                padding: 10,
+                titleFont: {
+                  size: 14,
+                },
+                bodyFont: {
+                  size: 14,
+                },
+              },
+            },
+            animation: {
+              animateScale: true,
+              animateRotate: true,
+            },
+          },
+        });
+      });
+    </script>
+  </body>
+</html>
